@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cookie Clicker</title>
+  <style>
+    :root {
+      --bg-color: #f7ede2;
+      --card-bg: #ffffff;
+      --text-main: #3d342f;
+      --text-muted: #7c7267;
+      --accent-color: #d48b48;
+      --btn-reset: #e76f51;
+      --btn-reset-hover: #d35438;
+      --shadow: 0 10px 25px rgba(61, 52, 47, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background: radial-gradient(circle at center, #fff6ee 0%, #f4e8dc 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow-x: hidden;
+    }
+
+    .container {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 2.5rem 3rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+      color: #5a3e2b;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .cookie-wrapper {
+      position: relative;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cookie-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      outline: none;
+      transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border-radius: 50%;
+      -webkit-tap-highlight-color: transparent;
+      display: inline-flex;
+    }
+
+    .cookie-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .cookie-btn:active,
+    .cookie-btn.clicked {
+      transform: scale(0.92);
+    }
+
+    .cookie-btn:focus-visible {
+      outline: 4px solid var(--accent-color);
+      outline-offset: 6px;
+    }
+
+    .cookie-svg {
+      width: 180px;
+      height: 180px;
+      filter: drop-shadow(0 12px 20px rgba(90, 62, 43, 0.25));
+      transition: filter 0.15s ease;
+    }
+
+    .cookie-btn:hover .cookie-svg {
+      filter: drop-shadow(0 16px 24px rgba(90, 62, 43, 0.35));
+    }
+
+    .counter-wrapper {
+      margin-bottom: 1.5rem;
+    }
+
+    .counter-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .counter-value {
+      font-size: 3.5rem;
+      font-weight: 800;
+      color: #5a3e2b;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      transition: transform 0.1s ease;
+    }
+
+    .counter-value.bump {
+      transform: scale(1.15);
+      color: #d48b48;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .reset-btn {
+      background: transparent;
+      color: var(--btn-reset);
+      border: 1.5px solid var(--btn-reset);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.45rem 1.2rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .reset-btn:hover {
+      background: var(--btn-reset);
+      color: #ffffff;
+    }
+
+    .reset-btn:focus-visible {
+      outline: 2px solid var(--btn-reset);
+      outline-offset: 2px;
+    }
+
+    /* Floating +1 particle animation */
+    .particle {
+      position: absolute;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #d48b48;
+      pointer-events: none;
+      animation: float-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes float-up {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateY(-70px) scale(1.3);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <h1>Cookie Clicker</h1>
+    <p class="subtitle">Click the cookie to increase your score!</p>
+
+    <div class="cookie-wrapper" id="cookieArea">
+      <button class="cookie-btn" id="cookieBtn" aria-label="Click the cookie">
+        <!-- Cookie SVG Graphic -->
+        <svg class="cookie-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="cookieBase" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#eed1a5" />
+              <stop offset="65%" stop-color="#cf9b5b" />
+              <stop offset="100%" stop-color="#a66e34" />
+            </radialGradient>
+            <filter id="chipShadow" x="-20%" y="-20%" width="150%" height="150%">
+              <feDropShadow dx="1" dy="2" stdDeviation="1.5" flood-color="#2a1608" flood-opacity="0.4" />
+            </filter>
+          </defs>
+
+          <!-- Main Cookie Shape with natural imperfections -->
+          <path
+            d="M 100,10
+               C 145,8 185,45 188,95
+               C 192,145 155,188 105,190
+               C 55,192 12,152 10,105
+               C 8,55 52,12 100,10 Z"
+            fill="url(#cookieBase)"
+            stroke="#8b5722"
+            stroke-width="3"
+          />
+
+          <!-- Cookie surface texture / cracks -->
+          <path d="M 45,70 Q 55,75 52,85" stroke="#9e662c" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round" />
+          <path d="M 130,50 Q 140,58 135,68" stroke="#9e662c" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round" />
+          <path d="M 140,135 Q 148,145 142,152" stroke="#9e662c" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round" />
+          <path d="M 70,145 Q 80,150 78,160" stroke="#9e662c" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round" />
+
+          <!-- Chocolate Chips with highlights -->
+          <g filter="url(#chipShadow)" fill="#3e200e">
+            <!-- Chip 1 -->
+            <path d="M 60,50 C 65,46 76,48 78,56 C 80,64 71,72 63,68 C 55,64 55,54 60,50 Z" />
+            <!-- Chip 2 -->
+            <path d="M 125,40 C 132,38 142,42 144,50 C 146,58 138,65 130,64 C 122,63 118,52 125,40 Z" />
+            <!-- Chip 3 (Center) -->
+            <path d="M 95,90 C 105,86 116,92 118,102 C 120,112 108,122 96,118 C 84,114 85,94 95,90 Z" />
+            <!-- Chip 4 -->
+            <path d="M 50,115 C 57,110 68,114 70,124 C 72,134 60,140 52,136 C 44,132 43,120 50,115 Z" />
+            <!-- Chip 5 -->
+            <path d="M 135,105 C 142,102 152,108 153,116 C 154,124 145,132 137,130 C 129,128 128,118 135,105 Z" />
+            <!-- Chip 6 -->
+            <path d="M 95,145 C 102,140 114,144 115,154 C 116,164 104,170 96,166 C 88,162 88,150 95,145 Z" />
+            <!-- Chip 7 -->
+            <path d="M 152,78 C 157,75 165,80 166,86 C 167,92 160,98 154,96 C 148,94 147,81 152,78 Z" />
+            <!-- Chip 8 -->
+            <path d="M 38,82 C 43,80 50,84 51,90 C 52,96 46,101 40,100 C 34,99 33,84 38,82 Z" />
+          </g>
+
+          <!-- Chip highlights -->
+          <g fill="#623a1e" opacity="0.5">
+            <ellipse cx="64" cy="53" rx="3" ry="1.5" transform="rotate(-15 64 53)" />
+            <ellipse cx="129" cy="45" rx="3" ry="1.5" transform="rotate(-10 129 45)" />
+            <ellipse cx="100" cy="95" rx="4" ry="2" transform="rotate(-20 100 95)" />
+            <ellipse cx="55" cy="119" rx="3" ry="1.5" transform="rotate(10 55 119)" />
+            <ellipse cx="139" cy="110" rx="3" ry="1.5" transform="rotate(-15 139 110)" />
+            <ellipse cx="100" cy="149" rx="3" ry="1.5" transform="rotate(-10 100 149)" />
+          </g>
+        </svg>
+      </button>
+    </div>
+
+    <div class="counter-wrapper">
+      <div class="counter-label">Cookies Clicked</div>
+      <div class="counter-value" id="counter" aria-live="polite">0</div>
+    </div>
+
+    <div class="actions">
+      <button class="reset-btn" id="resetBtn" title="Reset counter to zero">Reset Counter</button>
+    </div>
+  </main>
+
+  <script>
+    const cookieBtn = document.getElementById('cookieBtn');
+    const cookieArea = document.getElementById('cookieArea');
+    const counterDisplay = document.getElementById('counter');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Retrieve saved count from localStorage, defaulting to 0
+    let count = parseInt(localStorage.getItem('cookieClickCount') || '0', 10);
+    if (isNaN(count)) count = 0;
+
+    function updateDisplay() {
+      counterDisplay.textContent = count.toLocaleString();
+    }
+
+    function createParticle(x, y) {
+      const particle = document.createElement('span');
+      particle.className = 'particle';
+      particle.textContent = '+1';
+
+      // Position relative to cookieArea
+      const rect = cookieArea.getBoundingClientRect();
+      const posX = x !== undefined ? x - rect.left : rect.width / 2;
+      const posY = y !== undefined ? y - rect.top : rect.height / 2;
+
+      // Slight random horizontal variation
+      const randomOffset = (Math.random() - 0.5) * 30;
+      particle.style.left = `${posX + randomOffset}px`;
+      particle.style.top = `${posY}px`;
+
+      cookieArea.appendChild(particle);
+
+      particle.addEventListener('animationend', () => {
+        particle.remove();
+      });
+    }
+
+    function triggerClick(e) {
+      count += 1;
+      localStorage.setItem('cookieClickCount', count.toString());
+      updateDisplay();
+
+      // Bump animation on counter
+      counterDisplay.classList.remove('bump');
+      void counterDisplay.offsetWidth; // Force reflow
+      counterDisplay.classList.add('bump');
+
+      // Click animation on button
+      cookieBtn.classList.add('clicked');
+      setTimeout(() => cookieBtn.classList.remove('clicked'), 100);
+
+      // Create floating +1 particle
+      if (e && e.clientX && e.clientY) {
+        createParticle(e.clientX, e.clientY);
+      } else {
+        createParticle();
+      }
+    }
+
+    cookieBtn.addEventListener('click', (e) => {
+      triggerClick(e);
+    });
+
+    // Reset button functionality
+    resetBtn.addEventListener('click', () => {
+      count = 0;
+      localStorage.setItem('cookieClickCount', '0');
+      updateDisplay();
+    });
+
+    // Initial load
+    updateDisplay();
+  </script>
+</body>
+</html>
