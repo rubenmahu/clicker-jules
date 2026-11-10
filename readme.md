@@ -4,46 +4,48 @@ A lightweight, modern web page featuring a centered interactive cookie and a cli
 
 ## Features
 
-- **Centered Interactive Cookie**: Beautiful custom SVG chocolate chip cookie located in the middle of the screen.
+- **Centered Interactive Cookie**: Custom SVG chocolate chip cookie located in the middle of the screen.
 - **Click Counter**: Dynamically tracks and displays how many times the cookie has been clicked.
 - **Interactive Feedback**:
   - Smooth bounce and click animations on the cookie.
   - Floating `+1` particle effects on each click.
   - Number bump animation on the counter display.
-- **Persistent State**: Automatically saves your click count in the browser's `localStorage` so your progress persists across page reloads.
+- **Persistent State**: The click count is persisted using a browser cookie (`cookieClicks`) with localStorage fallback, ensuring your progress is retained across visits.
 - **Reset Option**: Convenient reset button allowing you to start over at any time.
 - **Responsive & Accessible**: Works across all screen sizes and devices with keyboard and screen reader accessibility support.
-- **Zero Dependencies**: Pure HTML, CSS, and vanilla JavaScript in a single, self-contained file.
+- **Clean Separation**: Structured into clean HTML markup, styling, and JavaScript logic (`script.js`).
 
 ## Getting Started
 
 ### Prerequisites
 
-No special dependencies or build steps are required. All you need is a modern web browser (such as Chrome, Firefox, Safari, or Edge).
+No special build tools or external packages are needed. You only need a modern web browser.
 
 ### Running the Web Page
 
-1. **Directly open in a browser**:
-   Double-click `index.html` or open it with your favorite browser:
-   ```bash
-   # On macOS
-   open index.html
+To support standard browser cookie persistence, it is recommended to run a lightweight local web server:
 
-   # On Linux
-   xdg-open index.html
+```bash
+# Using Python's built-in HTTP server
+python3 -m http.server 8000
+```
 
-   # On Windows
-   start index.html
-   ```
+Then navigate to `http://localhost:8000` in your web browser.
 
-2. **Using a local web server (optional)**:
-   You can serve the file using Python's built-in HTTP server:
-   ```bash
-   python3 -m http.server 8000
-   ```
-   Then open `http://localhost:8000` in your web browser.
+Alternatively, you can open `index.html` directly in your browser:
+```bash
+# On macOS
+open index.html
+
+# On Linux
+xdg-open index.html
+
+# On Windows
+start index.html
+```
 
 ## File Structure
 
-- `index.html` - The complete web application containing HTML layout, CSS styling, SVG graphics, and JavaScript logic.
+- `index.html` - HTML document layout and CSS styling with the centered cookie and counter display.
+- `script.js` - Client-side JavaScript handling interactions, particle effects, and cookie persistence.
 - `readme.md` - Documentation and instructions for running the project.
